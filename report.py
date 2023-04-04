@@ -71,4 +71,4 @@ def generate_report(filepath):
     visualize_annotator_accuracy(data['annotator_accuracy'], data['overall_accuracy'], data['good_annotators'],
                                  data['bad_annotators'], 'annotator_accuracy.png')
 
-    print("\n Report generated successfully! Please find the graphs in the output file.\n")
+    print("\nReport generated successfully! Please find the graphs in the output file.\n")
