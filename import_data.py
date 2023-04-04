@@ -44,3 +44,11 @@ def cleanup_tasks(tasks):
     tasks_frame = pd.DataFrame(tasks_list)
 
     return tasks_frame
+
+
+def get_analysis_data(filepath):
+
+    with open(filepath, 'r') as f:
+        data = json.load(f)
+
+    return data

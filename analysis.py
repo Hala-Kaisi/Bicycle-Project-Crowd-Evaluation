@@ -1,6 +1,5 @@
 import pandas as pd
-from sklearn.metrics import cohen_kappa_score
-import numpy as np
+import storage
 import statistics
 from collections import Counter
 
@@ -59,7 +58,7 @@ def calculate_annotation_durations(tasks_frames):
     min_time = durations[0]
     max_time = durations[-1]
 
-    return mean_time, min_time, max_time
+    storage.save_annotation_durations(mean_time, min_time, max_time)
 
 def compare_annotator_results(tasks_frames):
 
@@ -75,8 +74,7 @@ def compare_annotator_results(tasks_frames):
             annotataros_results[id] += 1
             num_annotations += 1
 
-    num = num_annotations
-    return annotataros_results
+    storage.save_annotator_results(annotataros_results)
 
 
 def calculate_kappa_coefficient(tasks_frames):
@@ -105,7 +103,7 @@ def calculate_kappa_coefficient(tasks_frames):
         poa = counts.get('yes', 0) * counts.get('no', 0) + (1 - counts.get('yes', 0)) * (1 - counts.get('no', 0))
         iaa[question_id] = poa
 
-    return iaa
+    storage.save_kappa_coefficient(iaa)
 
 
 def analyze_extra_outputs(tasks_frames):
@@ -136,7 +134,7 @@ def analyze_extra_outputs(tasks_frames):
                 annotator_frequency[annotator_id] = {'cant_solve_count': cant_solve_count,
                                                      'corrupt_data_count': corrupt_data_count}
 
-    return cant_solve_overall_count, corrupt_data_overall_count, annotator_frequency
+    storage.save_extra_outputs(cant_solve_overall_count, corrupt_data_overall_count, annotator_frequency)
 
 def analyze_ref(reference_frames):
 
@@ -150,7 +148,7 @@ def analyze_ref(reference_frames):
     n_positive = labels.count(True)
     n_negative = labels.count(False)
 
-    return n_positive, n_negative
+    storage.save_ref_data(n_positive, n_negative)
 
 def check_annotator_accuracy(tasks_frames, reference_frames):
 
@@ -191,4 +189,4 @@ def check_annotator_accuracy(tasks_frames, reference_frames):
             bad_annotators.append(annotator_id)
 
 
-    return annotator_accuracy, overall_accuracy, good_annotators, bad_annotators
+    storage.save_annotator_accuracy(annotator_accuracy, overall_accuracy, good_annotators, bad_annotators)
