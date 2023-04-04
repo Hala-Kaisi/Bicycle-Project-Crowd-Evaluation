@@ -77,7 +77,7 @@ The reference set was balanced, with an equal number of positive and negative ex
 
 ## Limitations
 
-There are some limitations to this analysis that should be considered. First, the dataset only includes annotations for images of bicycles, so the findings may not be applicable to other types of images or tasks. Second, the analysis only considers the results of the annotators, and does not take into account their individual backgrounds or experience. Finally, the analysis is limited by the fact that it only considers one reference set, and the results may differ if a different reference set was used.
+There are some limitations to this analysis that should be considered. First, the dataset only includes annotations for images of bicycles, so the findings may not be applicable to other types of images or tasks. Second, the analysis only considers the results of the annotators, and does not take into account their individual backgrounds or experience.
 
 ## Future Work
 
