@@ -3,7 +3,6 @@ import import_data
 import pandas as pd
 from plotnine import ggplot, aes, geom_bar, geom_errorbar, theme, element_text
 import numpy as np
-import seaborn as sns
 
 
 

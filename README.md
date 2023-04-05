@@ -14,7 +14,14 @@ This project is part of the Quality Match GmbH recruitment process for a data sc
 
 3- Clone this repository to your local machine.
 
-4- Run the code from the terminal:
+4- Make sure you have Python 3.6 or higher installed, along with the following modules:
+
+    - pandas
+    - numpy
+    - matplotlib
+    - plotnine
+
+5- Run the code from the terminal:
 
     python3 main.py
 
