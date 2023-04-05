@@ -2,6 +2,7 @@ import pandas as pd
 import storage
 import statistics
 from collections import Counter
+import numpy    as np
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -10,6 +11,7 @@ num = 0
 def check_data(references_frames, tasks_frames):
     ref = references_frames
     tasks = tasks_frames
+    no_tasks = 0
 
     ref_missing_values = ref.isna().sum()
     tasks_missing_values = tasks.isna().sum()
@@ -33,6 +35,7 @@ def check_data(references_frames, tasks_frames):
 
 
 def get_no_annonators(tasks_frames):
+
     tasks = tasks_frames
     annotators_no = set()
 
@@ -40,25 +43,30 @@ def get_no_annonators(tasks_frames):
         for i in range(len(row['results'])):
             annotators_no.add(row['results'][i]['user']["vendor_user_id"])
 
+    print(f"\nAnalyzing {len(annotators_no)} annotators and their outputs...\n")
+
     return len(annotators_no)
 
 
 def calculate_annotation_durations(tasks_frames):
     tasks = tasks_frames
     durations = []
+    durations_dict = {}
 
     for index, row in tasks.iterrows():
         for i in range(len(row['results'])):
             time = row['results'][i]['task_output']['duration_ms']/1000
             if time > 0:
                 durations.append(time)
+                if row['results'][i]['user']["vendor_user_id"] not in durations_dict:
+                    durations_dict[row['results'][i]['user']["vendor_user_id"]] = []
+                durations_dict[row['results'][i]['user']["vendor_user_id"]].append(time)
 
     mean_time = statistics.mean(durations)
-    durations.sort()
-    min_time = durations[0]
-    max_time = durations[-1]
+    min_time = min(durations)
+    max_time = max(durations)
 
-    storage.save_annotation_durations(mean_time, min_time, max_time)
+    storage.save_annotation_durations(mean_time, min_time, max_time, durations_dict)
 
 def compare_annotator_results(tasks_frames):
 
@@ -78,7 +86,6 @@ def compare_annotator_results(tasks_frames):
 
 
 def calculate_kappa_coefficient(tasks_frames):
-
     tasks = tasks_frames
     question_counts = {}
     question_responses = []
@@ -86,7 +93,7 @@ def calculate_kappa_coefficient(tasks_frames):
 
     for index, row in tasks.iterrows():
         for i in range(len(row['results'])):
-            task_id = i
+            task_id = row['results'][i]['task_input']['image_url'].split("/")[-1].split(".")[0]
             annotator_id = row['results'][i]['user']['vendor_user_id']
             answer = row['results'][i]['task_output']['answer']
             question_responses.append(
@@ -100,8 +107,20 @@ def calculate_kappa_coefficient(tasks_frames):
                                         'no': counts.get('no', 0) / len(responses)}
 
     for question_id, counts in question_counts.items():
-        poa = counts.get('yes', 0) * counts.get('no', 0) + (1 - counts.get('yes', 0)) * (1 - counts.get('no', 0))
-        iaa[question_id] = poa
+        po_yes = counts.get('yes', 0)
+        po_no = counts.get('no', 0)
+
+        # Observed agreement (Po)
+        po = po_yes ** 2 + po_no ** 2
+
+        # Expected agreement (Pe)
+        pe_yes = np.mean([counts.get('yes', 0) for _, counts in question_counts.items()])
+        pe_no = np.mean([counts.get('no', 0) for _, counts in question_counts.items()])
+        pe = pe_yes ** 2 + pe_no ** 2
+
+        # Kappa coefficient
+        kappa = (po - pe) / (1 - pe)
+        iaa[question_id] = kappa
 
     storage.save_kappa_coefficient(iaa)
 

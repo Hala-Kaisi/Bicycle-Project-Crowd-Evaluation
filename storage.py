@@ -15,9 +15,9 @@ def save_annotator_count(num_annotators):
     data = {'num_annotators': num_annotators}
     save_data(data)
 
-def save_annotation_durations(mean_time, min_time, max_time):
+def save_annotation_durations(mean_time, min_time, max_time, durations):
 
-    data = {'mean_time': mean_time, 'min_time': min_time, 'max_time': max_time}
+    data = {'mean_time': mean_time, 'min_time': min_time, 'max_time': max_time, 'durations': durations}
     save_data(data)
 
 def save_annotator_results(annotator_results):
