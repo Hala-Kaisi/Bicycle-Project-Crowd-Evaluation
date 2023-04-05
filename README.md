@@ -12,7 +12,7 @@ This project is part of the Quality Match GmbH recruitment process for a data sc
 
 2- Move these files to a folder named data_input.
 
-3- Clone this repository to your local machine.
+3- Clone this repository to your local machine and add data_input to the same directory.
 
 4- Make sure you have Python 3.6 or higher installed, along with the following modules:
 
